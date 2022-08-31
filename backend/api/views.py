@@ -1,12 +1,15 @@
-from email import header
-import json
 from django.forms.models import model_to_dict
-from django.http import JsonResponse, HttpResponse
 from products.models import Product
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 
 # Create your views here.
+@api_view(["GET", "POST"])
 def api_home(request, *args, **kwargs):
+    """
+    DRF API View
+    """
     model_data = Product.objects.all().order_by('?').first()
     # print(model_data)
     data = {}
@@ -14,8 +17,4 @@ def api_home(request, *args, **kwargs):
         data = model_to_dict(model_data,
                              fields=['id', 'title', 'price', 'content']
                              )
-    return JsonResponse(data)
-    #     print(data)
-    #     print(dict(data))
-    #     json_data = json.dumps(data)
-    # return HttpResponse(json_data, headers={"content-type": "application/json"})
+    return Response(data)
