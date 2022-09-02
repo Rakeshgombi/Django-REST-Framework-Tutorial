@@ -3,21 +3,19 @@ from products.models import Product
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from products.serializers import ProductSerializers
-
+from django.http import JsonResponse
 
 # Create your views here.
-@api_view(["GET", "POST"])
+
+
+@api_view(["POST"])
 def api_home(request, *args, **kwargs):
     """
     DRF API View
     """
-    instance = Product.objects.all().order_by('?').first()
-    # print(model_data)
-    data = {}
-    if instance:
-        # data = model_to_dict(instance,
-        #                      fields=['id', 'title', 'price',
-        #                              'content', 'sale_price']
-        #                      )
-        data = ProductSerializers(instance).data
-    return Response(data)
+    serializer = ProductSerializers(data=request.data)
+    if serializer.is_valid(raise_exception=True):
+        # instance = serializer.save()
+        # print(instance)
+        return Response(serializer.data)
+    return Response({"invalid_data": "not goot data"}, status=400)
